@@ -32,7 +32,7 @@ export const agent = async (req, res) => {
       return res.status(200).json({
          answer: result?.aiResponse,
          images:  result?.images,
-         Artifacts: result?.artifacts
+         artifacts: result?.artifacts
       });
    } catch (error) {
       console.error("Error saving message:", error);
