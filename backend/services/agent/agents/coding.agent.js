@@ -10,7 +10,8 @@ export const codingAgent = async (state) => {
 
     Return ONLY one of these values.
 
-    CODE_GENERATION
+    PROJECT_GENERATION
+    CODE_GENERATION   
     CODE_REVIEW
     CODE_EXPLANATION
     DEBUGGING
@@ -18,13 +19,35 @@ export const codingAgent = async (state) => {
     CONVERSION
     DOCUMENTATION
 
+    Definitions:
+
+    1. PROJECT_GENERATION
+  - The user wants an entire application, website, project, dashboard, API, clone, or folder structure.
+
+  - Examples:
+  - Build a Netflix clone
+  - Create a React Todo App
+  - Build an Express REST API
+  - Create a Portfolio Website
+  - Build a MERN Chat App
+
+  2. CODE_GENERATION
+  - The user wants a standalone code snippet, function, class, algorithm, SQL query, script, or program.
+
+  - Examples:
+  - Write BFS in C++
+  - Binary Search in Java
+  - Python merge sort
+  - SQL query for highest salary
+  - Java
+
     User Request:
     ${state.prompt}
   `)
 
   const intent = intentRes.content
   
-  if (intent == "CODE_GENERATION") {
+  if (intent == "PROJECT_GENERATION") {
     const prompt = `
        You are CortexAI Coding Agent.
    
@@ -89,7 +112,7 @@ export const codingAgent = async (state) => {
     `;
 
     const res = await llm.invoke(prompt)
-    const data = JSON.parse( res.content)
+    const data = JSON.parse(res.content)
 
     return {
         ...state,
@@ -105,6 +128,36 @@ export const codingAgent = async (state) => {
     }
 
 
+  }
+
+  
+   if (intent == "CODE_GENERATION") {
+    const prompt = `
+    Rules:
+    - For simple questions, greetings, and short queries, respond naturally in plain text.
+    - For technical, educational, coding, or detailed topics, use clean Markdown. 
+
+    Formatting:
+    - Use # for titles and ## for sections.
+    - Leave a blank line after headings.
+    - Use bullet points for lists.
+    - Use numbered lists for steps.
+    - Use fenced code blocks with language tags for code.
+    - Keep paragraphs short and readable.
+    - Never write headings and content on the same line.
+    - Never generate large walls of text.
+
+       User Request:
+       ${state.prompt}
+    `;
+
+    const res = await llm.invoke(prompt)
+    const data = res.content
+     return {
+      ...state,
+      aiResponse: data,
+      artifacts: []  
+    }
   }
 
   const res = await llm.invoke(`

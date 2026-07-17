@@ -13,6 +13,11 @@ const ChatArea = () => {
 
   useEffect(() => {
     const getMesg = async () => {
+      if (!selectedConversation) {
+         dispatch(setMessages([]));
+         dispatch(setArtifacts([]));
+         return;
+      }
       if (selectedConversation) {
         if (selectedConversation.title == "New Chat") return;
         const data = await getMessages(selectedConversation?._id);

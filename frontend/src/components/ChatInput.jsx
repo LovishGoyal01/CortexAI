@@ -17,8 +17,11 @@ function ChatInput() {
   const handleSendMessage = async () => {
 
     let conversation = selectedConversation;
+    
     if(!conversation){
+      console.log("Creating new conversation");
       const conv = await createConversation()
+      console.log(conv);
       dispatch(setSelectedConversation(conv))
       dispatch(addConversation(conv))
       conversation=conv;

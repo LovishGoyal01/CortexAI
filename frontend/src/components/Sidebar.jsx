@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Coins, LogOut, MessageSquare, PanelLeftIcon, PanelRight, PenSquare, Plus, User } from "lucide-react"
 import { getConversations } from '../features/getConversations';
-import { addConversation, setConversations, setSelectedConversation } from "../redux/conversationSlice"
-import { createConversation } from '../features/createConversation';
+import { setConversations, setSelectedConversation } from "../redux/conversationSlice"
 import logOut from '../features/logOut';
 import { setUserdata } from '../redux/userSlice';
 
@@ -24,11 +23,6 @@ const Sidebar = () => {
       }
       getConv();
     },[userData?._id])
-
-    const handleCreateConversation = async()=>{
-       const data = await createConversation();
-       dispatch(addConversation(data));
-    }
 
     if(collapsed){
       return(
@@ -110,7 +104,7 @@ const Sidebar = () => {
                  <PanelLeftIcon />
               </div>
               <span className='text-[16px] font-semibold text-slate-100 tracking-tight flex-1'>
-                CoretexAI
+                CortexAI
               </span>
               <span className='text-[10px] font-medium text-indigo-400 bg-indigo-500/10
               border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide'>
@@ -147,9 +141,9 @@ const Sidebar = () => {
 
           <div className="flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {conversations.map((conv,i)=>{
-                const isActive = selectedConversation?._id==conv?._id
+                const isActive = selectedConversation?._id===conv?._id
                 return(
-                  <div onClick={()=> dispatch(setSelectedConversation(conv))}
+                  <div key={conv._id} onClick={()=> dispatch(setSelectedConversation(conv))}
                     className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5 rounded-[10px] border transition-colors duration-150 
                       ${
                       isActive

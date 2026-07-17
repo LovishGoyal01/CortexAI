@@ -20,14 +20,8 @@ export const getModel = async (agent) => {
   }); 
 
   switch (agent) {
-    case "image":
-      return groq;
     case "coding":
-      return openrouter;  
-    case "chat":
-      return groq; 
-    case "search":
-      return groq;   
+      return openrouter;     
     default:
       return groq;
   }

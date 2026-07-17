@@ -6,7 +6,7 @@ export const chatAgent = async (state) => {
 
 
  try {
-         const llm  = await getModel("chat")
+     const llm  = await getModel("chat")
 
     const history = await getMemory(state.conversationId)  // sorting out user messages and llms res
 
