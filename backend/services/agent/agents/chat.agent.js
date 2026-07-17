@@ -1,9 +1,12 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { getModel } from "../config/llmModel.js";
+import { getModel } from "../config/llmModels.js";
 import { getMemory } from "../config/momory.js";
 
 export const chatAgent = async (state) => {
-    const llm  = await getModel("chat")
+
+
+ try {
+         const llm  = await getModel("chat")
 
     const history = await getMemory(state.conversationId)  // sorting out user messages and llms res
 
@@ -57,4 +60,14 @@ export const chatAgent = async (state) => {
         ...state,
         aiResponse: response.content,
     }
+
+  } catch (error) {
+    return {
+        ...state,
+        aiResponse: "❌ Failed to generate response. Please try again later.",
+    }
+  } 
+
+
+
 }    

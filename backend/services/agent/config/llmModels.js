@@ -21,7 +21,7 @@ export const getModel = async (agent) => {
 
   switch (agent) {
     case "image":
-      return gemini;
+      return groq;
     case "coding":
       return openrouter;  
     case "chat":
