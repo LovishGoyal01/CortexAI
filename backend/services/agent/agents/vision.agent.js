@@ -45,7 +45,7 @@ ${state.prompt}
     const filename = `image-${Date.now()}.png`;
 
     await uploadToS3(filename, buffer, "image/png");
-    const downloadUrl = await getFromS3(filename, 24 * 60 * 60);
+    const downloadUrl = await getFromS3(filename,60 * 24);
 
     return {
       ...state,
