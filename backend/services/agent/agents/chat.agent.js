@@ -1,12 +1,12 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { getModel } from "../config/llmModels.js";
 import { getMemory } from "../config/momory.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 export const chatAgent = async (state) => {
 
-
  try {
-     const llm  = await getModel("chat")
+    const llm  = await getModel("chat")
 
     const history = await getMemory(state.conversationId)  // sorting out user messages and llms res
 
@@ -56,6 +56,7 @@ export const chatAgent = async (state) => {
     
 
     const response = await llm.invoke(messages)
+    await deductCredits(state.userId, "chat")  // Deduct credits for the user
     return {
         ...state,
         aiResponse: response.content,

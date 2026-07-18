@@ -1,7 +1,9 @@
-import express from "express";
 import dotenv from "dotenv";
-import proxy from "express-http-proxy";
 dotenv.config();  //dotenv.config(); loads the variables from your .env file into process.env
+
+import express from "express";
+
+import proxy from "express-http-proxy";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { getCurrentUser } from "./controllers/user.controller.js";
@@ -22,7 +24,8 @@ app.use(cookieParser());
 
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE))     // in proxy that service is defined when we call /auth it will redirect to the auth service
 app.use("/api/chat",protect, proxyWithHeader(process.env.CHAT_SERVICE)) 
-app.use("/api/agent",protect, proxy(process.env.AGENT_SERVICE)) 
+app.use("/api/agent",protect, proxyWithHeader(process.env.AGENT_SERVICE)) 
+app.use("/api/billing",protect, proxyWithHeader(process.env.BILLING_SERVICE)) 
 app.get("/api/me", protect, getCurrentUser);  // this route is protected by the auth middleware)
 
 app.get("/", (req, res) => {

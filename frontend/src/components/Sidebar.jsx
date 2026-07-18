@@ -5,6 +5,7 @@ import { getConversations } from '../features/getConversations';
 import { setConversations, setSelectedConversation } from "../redux/conversationSlice"
 import logOut from '../features/logOut';
 import { setUserdata } from '../redux/userSlice';
+import BillingDrawer from './BillingDrawer';
 
 
 
@@ -15,6 +16,8 @@ const Sidebar = () => {
     const [imageError, setImageError] = useState(false)
     const { conversations, selectedConversation } = useSelector(State => State.conversation)
     const { userData } = useSelector(State => State.user)
+
+    const [showBilling, setShowBilling] = useState(false);
 
     useEffect(()=>{
       const getConv = async()=>{
@@ -193,11 +196,11 @@ const Sidebar = () => {
                   <p className="text-[13.5px] font-semibold text-slate-100 truncate">
                     {userData?.name || "user"}
                   </p>
-                  <p className='text-[11px] text-slate-600 mt-px'>{"Free Plan"}</p>
+                  <p className='text-[11px] text-slate-600 mt-px'>{userData?.plan || "free"}</p>
                 </div> 
 
                 <div className="flex gap-1">
-                  <button
+                  <button onClick={()=>setShowBilling(true)}
                     className="flex items-center justify-center w-7 h-7 rounded-[7px]
                     border-none bg-transparent text-yellow-600 cursor-pointer
                     hover:bg-white/[0.08] hover:text-slate-400
@@ -229,6 +232,8 @@ const Sidebar = () => {
           </div>
 
        </div>
+
+       <BillingDrawer open={showBilling} onClose={()=>setShowBilling(false)} />
     </div>
 
     )

@@ -2,6 +2,7 @@ import { getModel } from "../config/llmModels.js";
 import { generatePdf } from "../utils/generatePdf.js";
 import { getFromS3 } from "../utils/getFromS3.js";
 import { uploadToS3 } from "../utils/uploadToS3.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 export const pdfAgent = async (state) => {
   try {
@@ -47,6 +48,7 @@ ${state.prompt}
 
     const downloadUrl = await getFromS3(fileName,24*60);
 
+    await deductCredits(state.userId, "pdf")  // Deduct credits for the user
     return {
       ...state,
       aiResponse: `# PDF Generated
@@ -59,7 +61,6 @@ _Link expires in 10 minutes._
 `
     }
   } catch (error) {
-    console.error("PDF Agent Error:", error);
     return {
       ...state,
       aiResponse: "❌ Failed to generate PDF. Please try again later.",

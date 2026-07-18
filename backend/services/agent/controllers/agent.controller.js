@@ -5,6 +5,7 @@ import { addMessage } from "../config/momory.js";
 export const agent = async (req, res) => {
    try {
       const { prompt, conversationId, agent } = req.body;
+      const userId = req.headers["x-user-id"];  // get the user id from the header
 
       await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
          role: "user",
@@ -15,7 +16,8 @@ export const agent = async (req, res) => {
       const result = await graph.invoke({  // this is state
         conversationId,
         prompt,
-        agent
+        agent,
+        userId,
       })
       
       await addMessage(conversationId, "user", prompt)  // IN Redis
@@ -35,7 +37,6 @@ export const agent = async (req, res) => {
          artifacts: result?.artifacts
       });
    } catch (error) {
-      console.error("Error saving message:", error);
       res.status(500).json({ message: `agent error: ${error}` });
    }
 }   

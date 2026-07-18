@@ -46,7 +46,7 @@ function ChatInput() {
 
     dispatch(setArtifacts(data?.artifacts || []))
     dispatch(addMessage({role:"assistant", content:data?.answer, images:data?.images} ))
-    console.log(data);
+   
   }
 
   const agents = [

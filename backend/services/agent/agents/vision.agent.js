@@ -2,6 +2,7 @@ import axios from "axios";
 import { getModel } from "../config/llmModels.js";
 import { uploadToS3 } from "../utils/uploadToS3.js";
 import { getFromS3 } from "../utils/getFromS3.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 export const visionAgent = async (state) => {
   try {
@@ -46,6 +47,7 @@ ${state.prompt}
 
     await uploadToS3(filename, buffer, "image/png");
     const downloadUrl = await getFromS3(filename,60 * 24);
+    await deductCredits(state.userId, "vision")  // Deduct credits for the user
 
     return {
       ...state,
@@ -59,8 +61,6 @@ ${state.prompt}
     };
     
   } catch (error) {
-    console.error("Vision Agent Error:", error);
-
     return {
       ...state,
       aiResponse: "❌ Failed to generate image. Please try again later.",
