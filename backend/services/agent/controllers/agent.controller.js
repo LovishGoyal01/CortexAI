@@ -5,6 +5,7 @@ import { addMessage } from "../config/momory.js";
 export const agent = async (req, res) => {
    try {
       const { prompt, conversationId, agent } = req.body;
+      const file = req.file;  // Get the uploaded file from the request
       const userId = req.headers["x-user-id"];  // get the user id from the header
 
       await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
@@ -18,6 +19,7 @@ export const agent = async (req, res) => {
         prompt,
         agent,
         userId,
+         file  // Pass the uploaded file to the graph
       })
       
       await addMessage(conversationId, "user", prompt)  // IN Redis
