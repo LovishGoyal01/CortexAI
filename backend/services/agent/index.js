@@ -11,6 +11,14 @@ const app = express();
 app.use(express.json()); 
 
 app.use("/",router);
+
+app.use((err, req, res, next) => {
+   if(err.statuS) {
+     return res.status(err.status).json(err.data);   
+   } 
+   return res.status(500).json({ message: `agent error: ${err.message}` });
+})  
+
 app.get("/", (req, res) => {
   res.json({ message: "Agent server is running" });
 });

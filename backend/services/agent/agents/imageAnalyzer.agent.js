@@ -1,12 +1,15 @@
 import { getModel } from "../config/llmModels.js";
-import fs from "fs";
+import fs from "fs/promises";
 import { deductCredits } from "../utils/deductCredits.js";
+import { SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { checkAgentLimit } from "../config/agentlimit.js";
 
 export const imageAnalyzer = async (state) => {
     try{
+      await checkAgentLimit(state.userId, "image")  // Check if the user has exceeded the vision limit
        const llm = await getModel("imageAnalyzer");
-       const imageBuffer = await fs.readFileSync(state.file.path);
-       const base64image = imageBuffer.toString("base64");
+       const imageBuffer = await fs.readFile(state.file.path);
+       const base64Image = imageBuffer.toString("base64");
        
        const messages = [
           new SystemMessage(`You are CortexAI image analyzer Agent.
@@ -45,19 +48,18 @@ Rules:
          };
 
     }catch(error){
-          console.error("Error in imageAnalyzer agent:", error);
           return {
-            ...state,
-            aiResponse: "Error analyzing the image.",
-          };
-    } finally {
-        // Clean up the uploaded file
-        if (state.file && state.file.path) {
-            fs.unlink(state.file.path, (err) => {
-                if (err) {
-                    console.error("Error deleting uploaded file:", err);
-                }
-            });
-        }
+           ...state,
+           aiResponse: error?.data?.message || "❌ Failed to analyze image. Please try again later.",
+         }  
+       
+    }finally {
+       if (state.file?.path) {
+         try {
+            await fs.unlink(state.file.path);
+         } catch (err) {
+            console.error("Error deleting uploaded file:", err);
+         }
+       }
     }
 }    

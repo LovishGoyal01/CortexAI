@@ -1,3 +1,4 @@
+import { checkAgentLimit } from "../config/agentlimit.js";
 import { searchTool } from "../config/tavily.js";
 import { deductCredits } from "../utils/deductCredits.js";
 
@@ -5,6 +6,7 @@ import { deductCredits } from "../utils/deductCredits.js";
 export const searchAgent = async (state) => {
 
   try {
+    await checkAgentLimit(state.userId, "search")  // Check if the user has exceeded the search limit
     const tool = searchTool();         // i created a instance of tavily
     const results = await tool.invoke({
       query: state.prompt,
@@ -21,6 +23,7 @@ export const searchAgent = async (state) => {
       ...state,
       searchResults: [],
       images: [],
+      aiResponse: error?.data?.message || "❌ Failed to perform search. Please try again later.",
     };
   }
 };

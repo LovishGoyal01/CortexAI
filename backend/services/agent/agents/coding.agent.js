@@ -1,8 +1,10 @@
+import { checkAgentLimit } from "../config/agentlimit.js";
 import { getModel } from "../config/llmModels.js";
 import { deductCredits } from "../utils/deductCredits.js";
 
 export const codingAgent = async (state) => {
-
+ try{
+  await checkAgentLimit(state.userId, "coding")  // Check if the user has exceeded the coding limit
   const intentllm = await getModel("intent");
   const llm = await getModel("coding");
 
@@ -11,7 +13,7 @@ export const codingAgent = async (state) => {
 
     Return ONLY one of these values.
 
-    PROJECT_GENERATION
+    PROJECT_GENERATION  
     CODE_GENERATION   
     CODE_REVIEW
     CODE_EXPLANATION
@@ -31,7 +33,8 @@ export const codingAgent = async (state) => {
   - Build an Express REST API
   - Create a Portfolio Website
   - Build a MERN Chat App
-
+  - Generate something like a project, app, website,componenet or dashboard in HTML, CSS, JS, React, Next.js, Vue, or other web technologies.
+  
   2. CODE_GENERATION
   - The user wants a standalone code snippet, function, class, algorithm, SQL query, script, or program.
 
@@ -41,6 +44,7 @@ export const codingAgent = async (state) => {
   - Python merge sort
   - SQL query for highest salary
   - Java
+  - create a code in c++,java or python to find the factorial of a number
 
     User Request:
     ${state.prompt}
@@ -199,4 +203,11 @@ export const codingAgent = async (state) => {
     aiResponse: data,
     artifacts: []  
   }
-}
+ } catch (error) {
+    return {
+        ...state,
+        artifacts: [], 
+        aiResponse: error?.data?.message || "❌ Failed to generate code. Please try again later.",
+      }  
+  }
+} 

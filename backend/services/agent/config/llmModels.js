@@ -10,7 +10,7 @@ export const getModel = async (agent) => {
 
   const gemini = new ChatGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_API_KEY,
-    model: "gemini-2.5-flash",
+    model: "gemini-3-flash-preview",
   });
 
   const openrouter = new ChatOpenRouter({

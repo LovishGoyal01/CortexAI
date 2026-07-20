@@ -2,10 +2,14 @@ import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages
 import { getModel } from "../config/llmModels.js";
 import { getMemory } from "../config/momory.js";
 import { deductCredits } from "../utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentlimit.js";
 
 export const chatAgent = async (state) => {
 
  try {
+
+    await checkAgentLimit(state.userId, "chat")  // Check if the user has exceeded the chat limit
+
     const llm  = await getModel("chat")
 
     const history = await getMemory(state.conversationId)  // sorting out user messages and llms res
@@ -65,10 +69,8 @@ export const chatAgent = async (state) => {
   } catch (error) {
     return {
         ...state,
-        aiResponse: "❌ Failed to generate response. Please try again later.",
-    }
+        aiResponse: error?.data?.message || "❌ Failed to generate response. Please try again later.",
+    }  
   } 
-
-
 
 }    

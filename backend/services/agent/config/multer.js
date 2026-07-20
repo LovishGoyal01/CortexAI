@@ -25,4 +25,4 @@ const fileFilter = (req, file, cb) => {
    }
 }
 
-export default multer({ storage, fileFilter, limits: { fileSize: 0 * 1024 * 1024 } });
+export default multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });

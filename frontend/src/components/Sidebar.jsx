@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Coins, LogOut, MessageSquare, PanelLeftIcon, PanelRight, PenSquare, Plus, User } from "lucide-react"
+import { X, Coins, LogOut, Menu, MessageSquare, PanelLeftIcon, PanelRight, PenSquare, Plus, User } from "lucide-react"
 import { getConversations } from '../features/getConversations';
 import { setConversations, setSelectedConversation } from "../redux/conversationSlice"
 import logOut from '../features/logOut';
@@ -16,6 +16,7 @@ const Sidebar = () => {
     const [imageError, setImageError] = useState(false)
     const { conversations, selectedConversation } = useSelector(State => State.conversation)
     const { userData } = useSelector(State => State.user)
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     const [showBilling, setShowBilling] = useState(false);
 
@@ -93,10 +94,21 @@ const Sidebar = () => {
     }
 
     return (
-    <div className="fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0
-      bg-[#0d0f14] border-r border-white/[0.06]"
-    >
-      
+
+    <>
+     <button  onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-3.5 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d0f14] border border-white/[0.06] text-slate-400 hover:text-slate-200 transition-colors duration-150 cursor-pointer"
+       >
+         <Menu size={14} />
+     </button>
+
+     {mobileOpen && (
+        <div onClick={()=>setMobileOpen(false)} className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
+     )}
+
+    <div className={` fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06]
+         transition-transform duration-250  ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+    > 
        <div className='flex flex-col h-full'>
           <div className='flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.06]'>
               <div  onClick={()=>setCollapsed(true)}
@@ -106,12 +118,17 @@ const Sidebar = () => {
               >
                  <PanelLeftIcon />
               </div>
+              <button onClick={() => setMobileOpen(false)}
+              className="lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
+              >
+                <X />
+              </button>
               <span className='text-[16px] font-semibold text-slate-100 tracking-tight flex-1'>
                 CortexAI
               </span>
               <span className='text-[10px] font-medium text-indigo-400 bg-indigo-500/10
               border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide'>
-                 Free
+                 {userData?.plan || "free"}
               </span>
               <button onClick={()=>dispatch(setSelectedConversation(null))}
               className="flex items-center justify-center w-7 h-7 rounded-lg
@@ -233,9 +250,10 @@ const Sidebar = () => {
 
        </div>
 
-       <BillingDrawer open={showBilling} onClose={()=>setShowBilling(false)} />
+       
     </div>
-
+    <BillingDrawer open={showBilling} onClose={()=>setShowBilling(false)} />
+    </>
     )
 }
 

@@ -3,9 +3,11 @@ import { generatePdf } from "../utils/generatePdf.js";
 import { getFromS3 } from "../utils/getFromS3.js";
 import { uploadToS3 } from "../utils/uploadToS3.js";
 import { deductCredits } from "../utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentlimit.js";
 
 export const pdfAgent = async (state) => {
   try {
+    await checkAgentLimit(state.userId, "pdf")  // Check if the user has exceeded the pdf limit
     const llm = await getModel("pdf");
 
     const prompt = `
@@ -61,9 +63,11 @@ _Link expires in 10 minutes._
 `
     }
   } catch (error) {
-    return {
-      ...state,
-      aiResponse: "❌ Failed to generate PDF. Please try again later.",
-    };
+
+     return {
+        ...state,
+        aiResponse: error?.data?.message || "❌ Failed to generate PDF. Please try again later.",
+      }  
+   
   }
 };

@@ -4,14 +4,17 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { vectorStore } from "../config/vectorDb.js";
 import { getModel } from "../config/llmModels.js";
 import { deductCredits } from "../utils/deductCredits.js";
+import { SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { checkAgentLimit } from "../config/agentlimit.js";
 
-export const pdfRag = async () =>{
+export const pdfRag = async (state) =>{
    try{
+      await checkAgentLimit(state.userId, "pdf")  // Check if the user has exceeded the pdf limit
       const buffer = fs.readFileSync(state.file.path);
       const pdf = new PDFParse({
         data:buffer
       });
-      const result = pdf.getText();
+      const result = await pdf.getText();
       const text = result.text;
 
       const splitter = new RecursiveCharacterTextSplitter({
@@ -66,9 +69,9 @@ Question:${state.prompt}
       }
    }catch(error){
       return {
-         ...state,
-         aiResponse: "Error processing the PDF."
-      }
+        ...state,
+        aiResponse: error?.data?.message || "❌ Error processing the PDF. Please try again later.",
+      }  
    }finally{
       // Clean up the uploaded file after processing
       if (state.file && state.file.path) {
