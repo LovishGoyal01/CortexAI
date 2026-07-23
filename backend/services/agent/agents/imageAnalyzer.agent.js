@@ -2,7 +2,7 @@ import { getModel } from "../config/llmModels.js";
 import fs from "fs/promises";
 import { deductCredits } from "../utils/deductCredits.js";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
-import { checkAgentLimit } from "../config/agentlimit.js";
+import { checkAgentLimit } from "../config/agentLimit.js";
 
 export const imageAnalyzer = async (state) => {
     try{
