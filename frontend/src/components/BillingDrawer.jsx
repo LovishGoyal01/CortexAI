@@ -122,7 +122,7 @@ const BillingDrawer = ({ open, onClose }) => {
                </p>
 
                <p className="text-slate-400 text-sm mt-1">
-                 1000 Credits
+                 2000 Credits
                </p>
 
                <button onClick={() => handleUpgrade("pro")} className="mt-4 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 py-2 text-white">

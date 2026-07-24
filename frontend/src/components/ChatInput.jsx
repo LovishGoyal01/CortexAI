@@ -1,5 +1,5 @@
-import { X, Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, Paperclip, Presentation, Send, Zap } from "lucide-react";
-import React, { useState } from "react";
+import { X, Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, Paperclip, Presentation, Send, Zap, MicOff } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import sendMessage from "../features/sendMessage";
 import { useDispatch, useSelector } from 'react-redux'
 import { addMessage,setArtifacts, setIsLoading }  from "../redux/messageSlice"
@@ -15,8 +15,49 @@ function ChatInput() {
   const [selectedAgent, setSelectedAgent] =  useState("Auto");
   const [selectedFile, setSelectedFile] = useState(null); 
   const { isLoading } = useSelector((state) => state.message);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef(null);
   const fileRef = useRef(null);
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+       
+       let transcript = "";
+       for(let index=event.resultIndex;index<event.results.length;index++){
+        const element = event.results[index];
+        transcript += element[0].transcript;
+       } 
+       setValue(transcript);
+    }
+
+    recognition.onend = () => {
+      setListening(false);
+    }
+
+    recognitionRef.current = recognition;  
+
+  },[])  
+
+  const toggleMic = () => {
+    if(!recognitionRef.current) alert("Speech Recognition is not supported in this browser.");
+    if(listening){
+      recognitionRef.current.stop();
+      setListening(false);
+    }else{
+      recognitionRef.current.start();
+      setListening(true);
+    }  
+
+  }  
 
   const handleSendMessage = async () => {
     
@@ -168,11 +209,11 @@ function ChatInput() {
                 <Paperclip size={16} />
              </button>
 
-             <button
-             className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400
-             hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer"
+             <button onClick={toggleMic}
+             className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-150 
+             cursor-pointer ${listening ? "bg-red-500 text-white" : "text-slate-600 hover:bg-white/[0.05] "} `}
              >
-                <Mic size={16} />
+               {listening? <Mic size={16} /> : <MicOff size={16} />}
              </button>
           </div>
 

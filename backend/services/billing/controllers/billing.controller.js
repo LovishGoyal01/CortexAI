@@ -2,7 +2,6 @@ import { PLANS } from "../config/Plans.js";
 import razorpay from "../config/razorpay.js";
 import Payment from "../models/payment.model.js";
 import crypto from "crypto";
-import User from "../../auth/models/user.model.js";
 import axios from "axios";
 
 export const createOrder = async (req, res) => {
