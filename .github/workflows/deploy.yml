@@ -45,7 +45,11 @@ jobs:
           docker push \
             $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/gateway:latest
 
-
+      - name: Create Firebase service account file
+        run: |
+          cat > backend/services/auth/serviceAccountKey.json <<EOF
+          ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          EOF
 
 
       - name: Build Auth
