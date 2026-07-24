@@ -45,11 +45,18 @@ jobs:
           docker push \
             $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/gateway:latest
 
+
       - name: Create Firebase service account file
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          cat > backend/services/auth/serviceAccountKey.json <<EOF
-          ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          EOF
+          echo "$FIREBASE_SERVICE_ACCOUNT" > backend/services/auth/serviceAccountKey.json
+
+      - name: Verify file
+        run: |
+          ls -la backend/services/auth
+          test -f backend/services/auth/serviceAccountKey.json && echo "✅ File exists"
+          wc -c backend/services/auth/serviceAccountKey.json 
 
 
       - name: Build Auth
@@ -57,6 +64,10 @@ jobs:
           docker build \
             -f backend/services/auth/Dockerfile \
             -t auth-service backend
+
+      - name: Verify file inside Docker image
+        run: |
+          docker run --rm auth-service sh -c "ls -la /app/services/auth"      
 
       - name: tag Auth
         run: |
