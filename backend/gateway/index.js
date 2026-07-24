@@ -33,5 +33,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Gateway server is running on port ${port}`);
+  console.log(`Gateway server is running at port ${port}`);
 })
