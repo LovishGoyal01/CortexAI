@@ -29,9 +29,9 @@ app.use("/api/billing",protect, proxyWithHeader(process.env.BILLING_SERVICE))
 app.get("/api/me", protect, getCurrentUser);  // this route is protected by the auth middleware)
 
 app.get("/", (req, res) => {
-  res.json({ message: "Gateway server is running" });
+  res.json({ message: "Hello fromGateway" });
 });
 
 app.listen(port, () => {
-  console.log(`Gateway server is running at port ${port}`);
+  console.log(`Gateway server is running on port ${port}`);
 })
