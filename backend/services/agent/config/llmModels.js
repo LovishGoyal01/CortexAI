@@ -17,7 +17,7 @@ export const getModel = async (agent) => {
     apiKey: process.env.OPENROUTER_API_KEY,
     model: "deepseek/deepseek-chat",
     temperature: 0,
-    maxTokens: 2500,
+    maxTokens: 8000,
   }); 
 
   switch (agent) {

@@ -117,6 +117,7 @@ export const codingAgent = async (state) => {
     `;
 
     const res = await llm.invoke(prompt)
+    console.log("Response length:", res.content.length);
     const data = JSON.parse(res.content)
     
     await deductCredits(state.userId, "coding")  // Deduct credits for the user
@@ -204,6 +205,9 @@ export const codingAgent = async (state) => {
     artifacts: []  
   }
  } catch (error) {
+    console.error("Coding Agent Error:", error);
+  console.error("Response:", error?.response?.data);
+
     return {
         ...state,
         artifacts: [], 
