@@ -121,10 +121,7 @@ export const codingAgent = async (state) => {
        ${state.prompt}
     `;
    console.log("G. Project generation started");
-    // const res = await llm.invoke(prompt)
-    const res = await llm.invoke(
-  'Return exactly {"files":[{"name":"index.html","content":"Hello"}]}'
-);
+    const res = await llm.invoke(prompt)
     console.log("H. LLM finished");
     console.log("Response length:", res.content.length);
     console.log("First 500 chars:");
