@@ -3,6 +3,12 @@ import { graph } from "../graph/graph.js";
 import { addMessage } from "../config/momory.js";
 
 export const agent = async (req, res, next) => {
+
+   console.log("===== AGENT CONTROLLER =====");
+  console.log("Prompt:", req.body.prompt);
+  console.log("File:", req.file?.originalname);
+  console.log("File Size:", req.file?.size);
+
    try {
       const { prompt, conversationId, agent } = req.body;
       const file = req.file;  // Get the uploaded file from the request
