@@ -16,8 +16,7 @@ export const codingAgent = async (state) => {
     You are an intent classifier.
 
     Return ONLY one of these values.
-
-    PROJECT_GENERATION  
+ 
     CODE_GENERATION   
     CODE_REVIEW
     CODE_EXPLANATION
@@ -28,28 +27,6 @@ export const codingAgent = async (state) => {
 
     Definitions:
 
-    1. PROJECT_GENERATION
-  - The user wants an entire application, website, project, dashboard, API, clone, or folder structure.
-
-  - Examples:
-  - Build a Netflix clone
-  - Create a React Todo App
-  - Build an Express REST API
-  - Create a Portfolio Website
-  - Build a MERN Chat App
-  - Generate something like a project, app, website,componenet or dashboard in HTML, CSS, JS, React, Next.js, Vue, or other web technologies.
-  
-  2. CODE_GENERATION
-  - The user wants a standalone code snippet, function, class, algorithm, SQL query, script, or program .
-
-  - Examples:
-  - Write BFS in C++
-  - Binary Search in Java
-  - Python merge sort
-  - SQL query for highest salary
-  - Java
-  - create a code in c++,java or python to find the factorial of a number
-
     User Request:
     ${state.prompt}
   `)
@@ -57,7 +34,7 @@ export const codingAgent = async (state) => {
 
   const intent = intentRes.content
   
-  if (intent == "PROJECT_GENERATION") {
+  if (intent == "CODE_GENERATION") {
     const prompt = `
        You are CortexAI Coding Agent.
    
@@ -120,7 +97,7 @@ export const codingAgent = async (state) => {
        User Request:
        ${state.prompt}
     `;
-   console.log("G. Project generation started");
+   console.log("G. code generation started");
     const res = await llm.invoke(prompt)
     console.log("H. LLM finished");
     console.log("Response length:", res.content.length);
@@ -144,38 +121,6 @@ export const codingAgent = async (state) => {
     }
 
 
-  }
-
-  
-   if (intent == "CODE_GENERATION") {
-    const prompt = `
-    Rules:
-    - For simple questions, greetings, and short queries, respond naturally in plain text.
-    - For technical, educational, coding, or detailed topics, use clean Markdown. 
-
-    Formatting:
-    - Use # for titles and ## for sections.
-    - Leave a blank line after headings.
-    - Use bullet points for lists.
-    - Use numbered lists for steps.
-    - Use fenced code blocks with language tags for code.
-    - Keep paragraphs short and readable.
-    - Never write headings and content on the same line.
-    - Never generate large walls of text.
-
-       User Request:
-       ${state.prompt}
-    `;
-
-    const res = await llm.invoke(prompt)
-    const data = res.content
-    await deductCredits(state.userId, "coding")  // Deduct credits for the user
-
-     return {
-      ...state,
-      aiResponse: data,
-      artifacts: []  
-    }
   }
 
   const res = await llm.invoke(`
