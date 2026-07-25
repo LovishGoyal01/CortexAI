@@ -4,14 +4,14 @@ import { deductCredits } from "../utils/deductCredits.js";
 
 export const codingAgent = async (state) => {
  try{
-  console.log("A. Enter coding agent");
+  
   await checkAgentLimit(state.userId, "coding")  // Check if the user has exceeded the coding limit
-  console.log("B. Limit checked");
+  
   const intentllm = await getModel("intent");
-  console.log("C. Intent model loaded");
+  
   const llm = await getModel("coding");
-  console.log("D. Coding model loaded");
-  console.log("E. Before intent classification");
+  
+  
   const intentRes = await intentllm.invoke(`
     You are an intent classifier.
 
@@ -55,7 +55,7 @@ Examples:
     User Request:
     ${state.prompt}
   `)
-  console.log("F. Intent:", intentRes.content);
+  
 
   const intent = intentRes.content
   
@@ -122,35 +122,25 @@ Examples:
        User Request:
        ${state.prompt}
     `;
-   console.log("G. Project generation started");
+   
     const res = await llm.invoke(prompt)
-    console.log("H. LLM finished");
-    console.log("Response length:", res.content.length);
-    console.log("First 500 chars:");
-    console.log(res.content.substring(0, 500));
+
     const data = JSON.parse(res.content)
-    console.log("I. JSON parsed");
+
     
     await deductCredits(state.userId, "coding")  // Deduct credits for the user
-    const response = {
-  ...state,
-  aiResponse: "Code Generated Successfully",
-  artifacts: [
-    {
-      id: Date.now(),
-      type: "Project",
-      files: data.files || [],
-      title: state.prompt,
-    },
-  ],
-};
-
-console.log("========== RETURN OBJECT ==========");
-console.dir(response, { depth: null });
-
-return response;
-
-
+    return {
+     ...state,
+     aiResponse: "Code Generated Successfully",
+     artifacts: [
+       {
+       id: Date.now(),
+       type: "Project",
+       files: data.files || [],
+       title: state.prompt,
+       },
+     ],
+    };
   }
 
   

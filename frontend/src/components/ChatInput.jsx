@@ -65,9 +65,9 @@ function ChatInput() {
     let conversation = selectedConversation;
     
     if(!conversation){
-      console.log("Creating new conversation");
+      
       const conv = await createConversation()
-      console.log(conv);
+      
       dispatch(setSelectedConversation(conv))
       dispatch(addConversation(conv))
       conversation=conv;
@@ -93,8 +93,6 @@ function ChatInput() {
 
     const data = await sendMessage(formData)
     setSelectedFile(null)
-    console.log("API Response:", data);
-console.log("Artifacts:", data?.artifacts);
 
     dispatch(setIsLoading(false)); // Set loading state to false after receiving the response
 

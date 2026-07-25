@@ -133,6 +133,8 @@ function MessageBubble({ role, content, images }) {
 
                  <SyntaxHighlighter language={language} style={oneDark} wrapLongLines showInlineLineNumbers
                   customStyle={{margin: 0, padding: "16px", background: "#0d1117", fontSize:"13px", }}
+                  lineNumberStyle={{ backgroundColor: "transparent" }}
+                  lineProps={{ style: { display: "block", width: "100%", backgroundColor: "transparent" } }}
                  >
                    {value}
                  </SyntaxHighlighter>
