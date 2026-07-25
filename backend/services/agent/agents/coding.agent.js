@@ -15,17 +15,42 @@ export const codingAgent = async (state) => {
   const intentRes = await intentllm.invoke(`
     You are an intent classifier.
 
-    Return ONLY one of these values.
- 
-    CODE_GENERATION   
-    CODE_REVIEW
-    CODE_EXPLANATION
-    DEBUGGING
-    OPTIMIZATION
-    CONVERSION
-    DOCUMENTATION
+Return ONLY one of these values.
 
-    Definitions:
+PROJECT_GENERATION  
+CODE_GENERATION   
+CODE_REVIEW
+CODE_EXPLANATION
+DEBUGGING
+OPTIMIZATION
+CONVERSION
+DOCUMENTATION
+
+Definitions:
+
+PROJECT_GENERATION
+- The user wants a complete application, website, dashboard, API, clone, component library, or multi-file project.
+Examples:
+- Build a Netflix clone
+- Create a React Todo App
+- Build an Express REST API
+- Create a portfolio website
+- Build a weather app
+
+CODE_GENERATION
+- The user wants a single function, class, algorithm, query, or code snippet.
+Examples:
+- Write BFS in C++
+- Binary Search in Java
+- Merge sort in Python
+- SQL query for highest salary
+  - Examples:
+  - Write BFS in C++
+  - Binary Search in Java
+  - Python merge sort
+  - SQL query for highest salary
+  - Java
+  - create a code in c++,java or python to find the factorial of a number
 
     User Request:
     ${state.prompt}
@@ -34,7 +59,7 @@ export const codingAgent = async (state) => {
 
   const intent = intentRes.content
   
-  if (intent == "CODE_GENERATION") {
+  if (intent == "PROJECT_GENERATION") {
     const prompt = `
        You are CortexAI Coding Agent.
    
@@ -97,7 +122,7 @@ export const codingAgent = async (state) => {
        User Request:
        ${state.prompt}
     `;
-   console.log("G. code generation started");
+   console.log("G. Project generation started");
     const res = await llm.invoke(prompt)
     console.log("H. LLM finished");
     console.log("Response length:", res.content.length);
@@ -121,6 +146,38 @@ export const codingAgent = async (state) => {
     }
 
 
+  }
+
+  
+   if (intent == "CODE_GENERATION") {
+    const prompt = `
+    Rules:
+    - For simple questions, greetings, and short queries, respond naturally in plain text.
+    - For technical, educational, coding, or detailed topics, use clean Markdown. 
+
+    Formatting:
+    - Use # for titles and ## for sections.
+    - Leave a blank line after headings.
+    - Use bullet points for lists.
+    - Use numbered lists for steps.
+    - Use fenced code blocks with language tags for code.
+    - Keep paragraphs short and readable.
+    - Never write headings and content on the same line.
+    - Never generate large walls of text.
+
+       User Request:
+       ${state.prompt}
+    `;
+
+    const res = await llm.invoke(prompt)
+    const data = res.content
+    await deductCredits(state.userId, "coding")  // Deduct credits for the user
+
+     return {
+      ...state,
+      aiResponse: data,
+      artifacts: []  
+    }
   }
 
   const res = await llm.invoke(`
@@ -159,13 +216,21 @@ export const codingAgent = async (state) => {
     artifacts: []  
   }
  } catch (error) {
-    console.error("Coding Agent Error:", error);
-  console.error("Response:", error?.response?.data);
+     console.error("========== CODING AGENT ERROR ==========");
+    console.error("Message:", error.message);
+    console.error("Name:", error.name);
+    console.error("Stack:", error.stack);
+
+   // LangChain/OpenRouter response (if available)
+   console.error("Response:", error?.response?.data);
+
+   // Log the entire error object
+   console.dir(error, { depth: null });
 
     return {
-        ...state,
-        artifacts: [], 
-        aiResponse: error?.data?.message || "❌ Failed to generate code. Please try again later.",
-      }  
+    ...state,
+    artifacts: [],
+    aiResponse: `❌ ${error.message}`,
+    };
   }
 } 
