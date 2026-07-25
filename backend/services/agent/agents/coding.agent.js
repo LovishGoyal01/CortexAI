@@ -132,18 +132,23 @@ Examples:
     console.log("I. JSON parsed");
     
     await deductCredits(state.userId, "coding")  // Deduct credits for the user
-    return {
-        ...state,
-        aiResponse: "Code Generated Successfully",
-        artifacts: [
-            {
-                id: Date.now(),
-                type: "Project",
-                files: data.files || [],
-                title: state.prompt
-            }
-        ]
-    }
+    const response = {
+  ...state,
+  aiResponse: "Code Generated Successfully",
+  artifacts: [
+    {
+      id: Date.now(),
+      type: "Project",
+      files: data.files || [],
+      title: state.prompt,
+    },
+  ],
+};
+
+console.log("========== RETURN OBJECT ==========");
+console.dir(response, { depth: null });
+
+return response;
 
 
   }
