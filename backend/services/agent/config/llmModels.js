@@ -14,6 +14,7 @@ export const getModel = async (agent) => {
   });
 
   const openrouter = new ChatOpenRouter({
+    apiKey: process.env.OPENROUTER_API_KEY,
     model: "deepseek/deepseek-chat",
     temperature: 0,
     maxTokens: 2500,
