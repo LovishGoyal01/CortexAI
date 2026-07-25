@@ -93,6 +93,8 @@ function ChatInput() {
 
     const data = await sendMessage(formData)
     setSelectedFile(null)
+    console.log("API Response:", data);
+console.log("Artifacts:", data?.artifacts);
 
     dispatch(setIsLoading(false)); // Set loading state to false after receiving the response
 
