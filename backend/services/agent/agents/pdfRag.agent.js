@@ -70,7 +70,7 @@ Question:${state.prompt}
    }catch(error){
       return {
         ...state,
-        aiResponse: error?.data?.message || "❌ Error processing the PDF. Please try again later.",
+        aiResponse: error?.message || "❌ Error processing the PDF. Please try again later.",
       }  
    }finally{
       // Clean up the uploaded file after processing

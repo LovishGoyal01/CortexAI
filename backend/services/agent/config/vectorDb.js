@@ -8,5 +8,6 @@ export const vectorStore = async (docs, collectionName) => {
       url: process.env.QDRANT_URL,
       apiKey: process.env.QDRANT_API_KEY,
       collectionName, 
+      checkCompatibility: false,
    } )
 }    
